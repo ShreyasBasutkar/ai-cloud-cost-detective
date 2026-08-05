@@ -1,11 +1,26 @@
-def analyze_costs(cost_data):
-    print("Analyzing cloud costs...")
+def analyze_cost_data(response):
+    """
+    Extract service-wise cost information from the
+    AWS Cost Explorer response.
+    """
 
-    total = sum(cost_data.values())
+    services = []
 
-    highest_service = max(cost_data, key=cost_data.get)
+    for result in response["ResultsByTime"]:
 
-    return {
-        "total_cost": total,
-        "highest_service": highest_service
-    }
+        for group in result["Groups"]:
+
+            service = group["Keys"][0]
+
+            amount = float(
+                group["Metrics"]["UnblendedCost"]["Amount"]
+            )
+
+            services.append(
+                {
+                    "service": service,
+                    "cost": amount
+                }
+            )
+
+    return services
