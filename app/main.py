@@ -1,23 +1,15 @@
 from collector import collect_cost_data
-from analyzer import analyze_costs
-from ai_agent import generate_ai_recommendation
+from analyzer import analyze_cost_data
 from report import generate_report
 
 
 def main():
-    print("=" * 50)
-    print(" AI Cloud Cost Detective ")
-    print("=" * 50)
 
-    cost_data = collect_cost_data()
+    response = collect_cost_data()
 
-    analysis = analyze_costs(cost_data)
+    summary = analyze_cost_data(response)
 
-    recommendation = generate_ai_recommendation(analysis)
-
-    generate_report(cost_data, analysis, recommendation)
-
-    print("\nApplication Finished Successfully!")
+    generate_report(summary)
 
 
 if __name__ == "__main__":

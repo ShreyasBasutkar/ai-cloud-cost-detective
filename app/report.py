@@ -1,17 +1,24 @@
-def generate_report(cost_data, analysis, recommendation):
-    print("Generating report...\n")
+def generate_report(summary):
+    print()
+    print("=" * 60)
+    print("        AI CLOUD COST DETECTIVE")
+    print("=" * 60)
 
-    print("===== CLOUD COST REPORT =====")
+    print(f"\nTotal AWS Cost : ${summary['total_cost']:.8f}")
 
-    print("\nServices")
+    print(
+        f"Highest Cost Service : "
+        f"{summary['highest_service']} "
+        f"(${summary['highest_cost']:.8f})"
+    )
 
-    for service, cost in cost_data.items():
-        print(f"{service}: ${cost}")
+    print("\nService Wise Cost\n")
 
-    print(f"\nTotal Cost: ${analysis['total_cost']}")
+    for service in summary["services"]:
 
-    print(f"Highest Cost Service: {analysis['highest_service']}")
+        print(
+            f"{service['service']:<45}"
+            f"${service['cost']:.8f}"
+        )
 
-    print("\nRecommendation")
-
-    print(recommendation)
+    print("\n" + "=" * 60)
