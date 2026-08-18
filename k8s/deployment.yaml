@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-cloud-cost-detective
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-cloud-cost-detective
+  template:
+    metadata:
+      labels:
+        app: ai-cloud-cost-detective
+    spec:
+      containers:
+        - name: ai-cloud-cost-detective
+          image: shreyasbasutkar/ai-cloud-cost-detective:latest
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: aws-credentials
+              mountPath: /root/.aws
+              readOnly: true
+
+      volumes:
+        - name: aws-credentials
+          secret:
+            secretName: aws-credentials
+            items:
+              - key: credentials
+                path: credentials

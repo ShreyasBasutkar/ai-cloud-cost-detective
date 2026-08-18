@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ai-cloud-cost-detective-job
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: ai-cloud-cost-detective
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: ai-cloud-cost-detective
+          image: shreyasbasutkar/ai-cloud-cost-detective:latest
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: aws-credentials
+              mountPath: /root/.aws
+              readOnly: true
+      volumes:
+        - name: aws-credentials
+          secret:
+            secretName: aws-credentials
+            items:
+              - key: credentials
+                path: credentials
