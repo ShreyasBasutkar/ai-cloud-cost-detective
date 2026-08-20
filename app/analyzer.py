@@ -1,12 +1,17 @@
 def analyze_cost_data(response):
     """
     Analyze AWS Cost Explorer response and return
-    aggregated service-level cost insights.
+    service-level costs and period comparison.
     """
 
-    service_costs = {}
+    periods = response["ResultsByTime"]
 
-    for result in response["ResultsByTime"]:
+    current_costs = {}
+    previous_costs = {}
+
+    for index, result in enumerate(periods):
+
+        target = previous_costs if index == 0 else current_costs
 
         for group in result["Groups"]:
 
@@ -16,32 +21,33 @@ def analyze_cost_data(response):
                 group["Metrics"]["UnblendedCost"]["Amount"]
             )
 
-            service_costs[service] = (
-                service_costs.get(service, 0.0) + cost
+            target[service] = (
+                target.get(service, 0.0) + cost
             )
 
-    # Convert dictionary into a list
+    # Current period services
     services = [
         {
             "service": service,
             "cost": cost
         }
-        for service, cost in service_costs.items()
+        for service, cost in current_costs.items()
     ]
 
-    # Sort from highest to lowest cost
     services.sort(
         key=lambda x: x["cost"],
         reverse=True
     )
 
-    # Net total across all services
     total_cost = sum(
         service["cost"]
         for service in services
     )
 
-    # Find highest positive-cost service
+    # Previous period total
+    previous_total = sum(previous_costs.values())
+
+    # Highest current-cost service
     positive_services = [
         service
         for service in services
@@ -56,9 +62,21 @@ def analyze_cost_data(response):
         highest_service = None
         highest_cost = 0.0
 
+    # Overall cost change
+    if previous_total != 0:
+        cost_change_percent = (
+            (total_cost - previous_total)
+            / abs(previous_total)
+        ) * 100
+    else:
+        cost_change_percent = 0.0
+
     return {
         "total_cost": total_cost,
+        "previous_total": previous_total,
+        "cost_change_percent": cost_change_percent,
         "highest_service": highest_service,
         "highest_cost": highest_cost,
-        "services": services
+        "services": services,
+        "previous_costs": previous_costs
     }

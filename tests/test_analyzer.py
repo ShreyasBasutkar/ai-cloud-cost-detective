@@ -43,10 +43,12 @@ def test_analyze_cost_data():
 
     result = analyze_cost_data(response)
 
-    assert result["total_cost"] == pytest.approx(0.0007)
+    assert result["total_cost"] == pytest.approx(0.0002)
+
+    assert result["previous_total"] == pytest.approx(0.0005)
 
     assert result["highest_service"] == "EC2 - Other"
 
-    assert result["highest_cost"] == pytest.approx(0.0006)
+    assert result["highest_cost"] == pytest.approx(0.0002)
 
-    assert len(result["services"]) == 2
+    assert len(result["services"]) == 1
