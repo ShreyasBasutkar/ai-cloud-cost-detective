@@ -17,7 +17,26 @@ def detect_anomalies(analysis):
 
         previous_cost = previous_costs.get(service, 0.0)
 
-        if previous_cost <= 0:
+        # Ignore services with no current positive cost.
+        if current_cost <= 0:
+            continue
+
+        # New spend: service had no previous cost.
+        if previous_cost < 0.000001:
+
+            # Ignore extremely tiny new costs.
+            if current_cost < 0.000001:
+                continue
+
+            anomalies.append({
+                "service": service,
+                "previous_cost": previous_cost,
+                "current_cost": current_cost,
+                "increase": current_cost,
+                "change_percent": 0.0,
+                "severity": "HIGH"
+            })
+
             continue
 
         increase = current_cost - previous_cost
@@ -55,3 +74,5 @@ def detect_anomalies(analysis):
         key=lambda x: x["increase"],
         reverse=True
     )
+
+    return anomalies
