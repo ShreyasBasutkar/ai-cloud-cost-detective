@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+# CI pipeline: test, build and push Docker imagename: Build and Push Docker Image
 
 on:
   push:
