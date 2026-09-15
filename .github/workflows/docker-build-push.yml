@@ -1,4 +1,5 @@
-# CI pipeline: test, build and push Docker imagename: Build and Push Docker Image
+# CI pipeline: test, build and push Docker image
+name: Build and Push Docker Image
 
 on:
   push:
@@ -27,6 +28,15 @@ jobs:
       - name: Run tests
         run: pytest
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: shreyasbasutkar/ai-cloud-cost-detective
+          tags: |
+            type=raw,value=latest
+            type=sha
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -38,4 +48,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: shreyasbasutkar/ai-cloud-cost-detective:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
