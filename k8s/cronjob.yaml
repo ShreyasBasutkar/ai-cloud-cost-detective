@@ -6,6 +6,7 @@ metadata:
 
 spec:
   schedule: "0 9 * * *"
+  timeZone: "Asia/Kolkata"
 
   concurrencyPolicy: Forbid
 
